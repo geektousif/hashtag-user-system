@@ -2,8 +2,13 @@ from django.urls import path, include
 from rest_framework import routers
 from .views import UserViewSet, index, RegisterUserView, user_login, user_logout, UpdateProfileView
 
+from product.views import ProductViewSet
+
 router = routers.DefaultRouter()
+
+# Admin accessible Viewsets
 router.register(r'admin-api/users', UserViewSet)
+router.register(r'admin-api/products', ProductViewSet)
 
 
 urlpatterns = [
