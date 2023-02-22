@@ -17,14 +17,25 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+
 from rest_framework.authtoken import views
+from rest_framework import routers
+
+from product.views import MultipleImageViewSet
+
+image_router = routers.DefaultRouter()
+image_router.register(r'', MultipleImageViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include('main.urls')),
     path("products/", include('product.urls')),
+    path("order/", include('order.urls')),
 
     # path('api-token-auth/', views.obtain_auth_token)
+
+    # image upload
+    path('admin-api/products/<int:pk>/images/', include(image_router.urls))
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
