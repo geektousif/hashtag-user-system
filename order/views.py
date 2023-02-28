@@ -23,39 +23,36 @@ class AddOrderItem(CreateAPIView, UpdateModelMixin):
 
     def create(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
-        # if product.units_available > 0:
         product_already = OrderItem.objects.filter(
             user=self.request.user, product__id=pk).first()
 
         if "quantity" not in self.request.data:
             self.request.data['quantity'] = 1
 
-        try:
+        if product_already:
             if product_already.product.units_available > 0:
-                if product_already:
-                    product_already.quantity += request.data['quantity']
-
-                    data = model_to_dict(product_already)
-                    serializer = self.get_serializer(
-                        product_already, data=data, partial=True)
-                    serializer.is_valid(raise_exception=True)
-                    serializer.save()
-                    return Response(serializer.data)
-                else:
-                    serializer = self.get_serializer(data=request.data)
-                    serializer.is_valid(raise_exception=True)
-                    self.perform_create(serializer)
-                    headers = self.get_success_headers(serializer.data)
-                    return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
-        except:
-            return Response({"message": "Product Not available"})
+                product_already.quantity += request.data['quantity']
+                data = model_to_dict(product_already)
+                serializer = self.get_serializer(
+                    product_already, data=data, partial=True)
+                serializer.is_valid(raise_exception=True)
+                serializer.save()
+                return Response(serializer.data)
+            else:
+                return Response({"message": "Product Not available"})
+        else:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
         product = Product.objects.filter(id=pk).first()
-        serializer.save(user=self.request.user,
-                        product=product)
-        Response(serializer.data)
+        if product.units_available > 0:
+            serializer.save(user=self.request.user,
+                            product=product)
 
 
 class RemoveOrderItem(DestroyAPIView):
@@ -90,14 +87,20 @@ class PlaceOrder(CreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
         user = self.request.user
         items = ProductsInCart.get_queryset(self)
 
         if len(items) <= 0:
             return Response({"message": "No item in cart"})
-        else:
-            for item in items:
-                item.ordered = True
-                item.save()
-            serializer.save(user=user, order_items=items)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        for item in items:
+            item.ordered = True
+            item.save()
+        serializer.save(user=user, order_items=items)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)

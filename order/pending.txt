@@ -1,7 +1,0 @@
-DONE:order based on units available
-DONE: increase quantity if already in cart
-DONE: remove from cart
-
-dont allow place order if no item in cart
-
-// other corner cases
