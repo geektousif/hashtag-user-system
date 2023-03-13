@@ -27,4 +27,4 @@
    python manage.py createsuperuser
    ```
 
-### Access the how-to-doc [here](https://docs.google.com/document/d/1-XFqzZSJ3nSwcqxp-yWsYGFBqsA9Cg4FrUAQNCz6e3o)
+### Access the Postman API Documentation [here](https://documenter.getpostman.com/view/13701358/2s8ZDR75n5)
