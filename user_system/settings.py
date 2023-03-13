@@ -40,10 +40,12 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework.authtoken',
+    'drf_yasg',
 
     'main',
     'product',
-    'order'
+    'order',
+    'chat'
 ]
 
 MIDDLEWARE = [

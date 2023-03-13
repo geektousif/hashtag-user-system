@@ -51,12 +51,8 @@ class Order(models.Model):
 def update_total_price(sender, instance, **kwargs):
     try:
         grand_total = 0
-        # order_inst = Order.objects.get(pk=instance.pk)
-        # print(instance)
         for item in instance.order_items.all():
             grand_total += item.price
         instance.total_price = grand_total
-        print(instance.total_price)
-        # print(order_inst)
     except Exception as e:
-        print(e)
+        return e
