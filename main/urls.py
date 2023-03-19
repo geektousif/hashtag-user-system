@@ -8,7 +8,7 @@ router = routers.DefaultRouter()
 
 # Admin accessible Viewsets
 router.register(r'admin-api/users', UserViewSet)
-router.register(r'admin-api/products', ProductViewSet)
+router.register(r'admin-api/products/crud', ProductViewSet)
 
 
 urlpatterns = [

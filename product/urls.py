@@ -11,5 +11,4 @@ urlpatterns = [
          name='add_order_item'),  # add to cart
     path("", ProductSearchList.as_view(), name='product_search'),
 
-
 ]

@@ -27,7 +27,7 @@ from drf_yasg import openapi
 from rest_framework.authtoken import views
 from rest_framework import routers
 
-from product.views import MultipleImageViewSet
+from product.views import MultipleImageViewSet, ScrapeAndAddProduct
 
 image_router = routers.DefaultRouter()
 image_router.register(r'', MultipleImageViewSet)
@@ -64,7 +64,11 @@ urlpatterns = [
     # path('api-token-auth/', views.obtain_auth_token)
 
     # image upload
-    path('admin-api/products/<int:pk>/images/', include(image_router.urls))
+    path('admin-api/products/<int:pk>/images/', include(image_router.urls)),
+
+    # Scrape Data and Fetch Product
+    path("admin-api/products/fetch_product/",
+         ScrapeAndAddProduct.as_view(), name='fetch_product')
 ]
 
 urlpatterns += static(settings.MEDIA_URL,
