@@ -31,7 +31,7 @@ class AddOrderItem(CreateAPIView, UpdateModelMixin):
 
         if product_already:
             if product_already.product.units_available > 0:
-                product_already.quantity += request.data['quantity']
+                product_already.quantity += int(request.data['quantity'])
                 data = model_to_dict(product_already)
                 serializer = self.get_serializer(
                     product_already, data=data, partial=True)

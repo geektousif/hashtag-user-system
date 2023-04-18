@@ -1,4 +1,5 @@
 # from django.shortcuts import render
+from django.db.models.query import QuerySet
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.mixins import CreateModelMixin
@@ -43,13 +44,17 @@ class MultipleImageViewSet(ModelViewSet):
     queryset = MultipleImage.objects.all()
     serializer_class = MultipleImageSerializer
     permission_classes = [IsAdminUser]
-    lookup_url_kwarg = 'pk'
+    lookup_url_kwarg = 'product_pk'
 
     def perform_create(self, serializer):
-        pk = self.kwargs['pk']
+        pk = self.kwargs['product_pk']
         product = Product.objects.filter(id=pk).first()
         print(product)
         serializer.save(product=product)
+
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        return queryset.filter(product__id=self.kwargs["product_pk"])
 
 
 class ScrapeAndAddProduct(CreateAPIView):

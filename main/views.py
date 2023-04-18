@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 
@@ -47,7 +47,7 @@ def user_login(req):
 
     login(req, user)
     token, _ = Token.objects.get_or_create(user=user)
-    return Response({'token': token.key}, status=status.HTTP_200_OK)
+    return Response({'token': token.key, 'user': user.email, 'is_admin': user.is_superuser}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -58,7 +58,7 @@ def user_logout(req):
     return Response({'message': 'Logout Success'}, status=status.HTTP_200_OK)
 
 
-class UpdateProfileView(UpdateAPIView):
+class UpdateProfileView(RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated]
 

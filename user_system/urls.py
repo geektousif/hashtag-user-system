@@ -64,7 +64,8 @@ urlpatterns = [
     # path('api-token-auth/', views.obtain_auth_token)
 
     # image upload
-    path('admin-api/products/<int:pk>/images/', include(image_router.urls)),
+    path('admin-api/products/<int:product_pk>/images/',
+         include(image_router.urls)),
 
     # Scrape Data and Fetch Product
     path("admin-api/products/fetch_product/",
